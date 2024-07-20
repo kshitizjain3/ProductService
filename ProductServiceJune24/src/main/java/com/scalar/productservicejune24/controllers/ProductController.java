@@ -2,10 +2,11 @@ package com.scalar.productservicejune24.controllers;
 import com.scalar.productservicejune24.models.Product;
 import com.scalar.productservicejune24.services.FakeStoreProductService;
 import com.scalar.productservicejune24.services.ProductService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class ProductController {
       this.b=b; }
     */
     private ProductService productService;
-    public ProductController(ProductService productService) { //constructor
+    public ProductController(@Qualifier("selfProductService") ProductService productService) { //constructor
         this.productService = productService;
         //here this is equivalent to:
         //this.productService = FakeStoreProductService or
@@ -30,11 +31,35 @@ public class ProductController {
 
     //http://localhost:8080/products/10
     @GetMapping("/{id}")
-    public Product getProductById(@PathVariable("id") Long id) {
-        return productService.getSingleProduct(id);
+    public ResponseEntity<Product> getProductById(@PathVariable("id") Long id) {
+            ResponseEntity<Product> response = new ResponseEntity<>(
+                    productService.getSingleProduct(id), HttpStatus.OK);
+            return response;
     }
 
+    @GetMapping()
     public List<Product> getAllProducts(){
-        return new ArrayList<>();
+       return productService.getAllProducts();
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteProduct(@PathVariable("id")Long productId){
+        productService.deleteProduct(productId);
+    }
+
+    //PATCH-->http://localhost:8080/products/1
+    @PatchMapping("/{id}")
+    public Product updateProduct(@PathVariable("id") Long id, @RequestBody Product product){
+        return productService.updateProduct(id, product);
+    }
+
+    //if  we forgot to give the value of any attribute then by default it will be set to null.
+    @PutMapping("/{id}")
+    public Product replaceProduct(@PathVariable("id") Long id, @RequestBody Product product){
+        return null;
+    }
+    @PostMapping
+    public Product addNewProduct(@RequestBody Product product){
+        return productService.addNewProduct(product);
     }
 }
