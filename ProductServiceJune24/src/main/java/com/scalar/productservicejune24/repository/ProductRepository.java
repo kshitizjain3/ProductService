@@ -1,8 +1,12 @@
 package com.scalar.productservicejune24.repository;
 
 import com.scalar.productservicejune24.models.Product;
+import com.scalar.productservicejune24.projections.productWithIdAndTitle;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
@@ -21,5 +25,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> { //here
     List<Product> findProductsByTitleContainsAndPriceGreaterThan(String word, Double price);
     List<Product> findProductsByTitleContainsOrderById(String word);
     @Override
-    List<Product> findAll(Sort sort);
+    Page<Product> findAll(Pageable pageable);
+    //HQL
+    @Query("select p.id as id, p.title as title from Product p where p.id=:x")
+    List<productWithIdAndTitle> randomSearchMethod(Long x);
+    //SQL
+    @Query(value ="select * from product p where p.id=:productId", nativeQuery=true)
+            Product randomSearchMethod2(Long productId);
 }

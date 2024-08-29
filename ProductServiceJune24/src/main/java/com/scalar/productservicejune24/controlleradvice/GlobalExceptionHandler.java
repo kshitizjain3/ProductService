@@ -1,5 +1,6 @@
 package com.scalar.productservicejune24.controlleradvice;
 
+import com.scalar.productservicejune24.dtos.ExceptionDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -7,9 +8,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 public class GlobalExceptionHandler {
     @ExceptionHandler(ArithmeticException.class)
-    public ResponseEntity<String> handleArithmeticException(){
-        ResponseEntity<String> response = new ResponseEntity<>(
-                "Arithmetic Exception has happened", HttpStatus.NOT_FOUND
+    public ResponseEntity<ExceptionDto> handleArithmeticException(){
+        ExceptionDto exceptionDto = new ExceptionDto();
+        exceptionDto.setMessage("Arithmetic Exception has happened");
+        exceptionDto.setSolution("I don't know, please try again");
+        ResponseEntity<ExceptionDto> response = new ResponseEntity<>(exceptionDto, HttpStatus.NOT_FOUND
         );
                 return response;
     }

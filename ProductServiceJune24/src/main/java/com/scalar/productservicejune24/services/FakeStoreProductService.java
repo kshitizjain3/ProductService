@@ -2,6 +2,8 @@ package com.scalar.productservicejune24.services;
 import com.scalar.productservicejune24.dtos.FakeStoreProductDto;
 import com.scalar.productservicejune24.models.Category;
 import com.scalar.productservicejune24.models.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpMessageConverterExtractor;
@@ -38,7 +40,7 @@ public class FakeStoreProductService implements ProductService {
     }
 
     @Override
-    public List<Product> getAllProducts() {
+    public Page<Product> getAllProducts(int pageNumber, int pageSize) {
         //During runtime list of FakeStoreProductDto type does not even exist.
         //So we can use an array instead.
         //List<FakeStoreProductDto> fakeStoreProductDtos = restTemplate.getForObject(
@@ -51,7 +53,7 @@ public class FakeStoreProductService implements ProductService {
         for (FakeStoreProductDto fakeStoreProductDto : fakeStoreProductDtos) {
             products.add(convertFakeStoreProductDtoToProduct(fakeStoreProductDto));
         }
-        return products;
+        return new PageImpl<>(products);
     }
 
     @Override
